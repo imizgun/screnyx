@@ -1,0 +1,20 @@
+[package]
+name = "screenie"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ssd1306 = "0.10.0"
+embedded-graphics = "0.8.2"
+stm32f4xx-hal = { version = "0.23", features = ["stm32f411"] }
+cortex-m-rt = "0.7"
+panic-halt = "0.2"
+serde = {version = "1.0.228", default-features = false, features = ["derive"]}
+serde-json-core = "0.6.0"
+heapless = "0.9.3"
+
+[profile.release]
+panic = "abort"
+
+[profile.dev]
+panic = "abort"
