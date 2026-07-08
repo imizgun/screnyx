@@ -1,1 +1,1 @@
-pub mod views;
+pub mod view_protocols;

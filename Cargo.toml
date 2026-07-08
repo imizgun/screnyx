@@ -1,5 +1,5 @@
 [package]
-name = "screenie"
+name = "emb3d-scrn"
 version = "0.1.0"
 edition = "2024"
 
@@ -12,6 +12,7 @@ panic-halt = "0.2"
 serde = {version = "1.0.228", default-features = false, features = ["derive"]}
 serde-json-core = "0.6.0"
 heapless = "0.9.3"
+embedded-hal-nb = "1.0"
 
 [profile.release]
 panic = "abort"
