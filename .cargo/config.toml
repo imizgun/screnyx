@@ -1,5 +1,14 @@
 [build]
-target = "thumbv7em-none-eabihf"
+target = "xtensa-esp32s3-none-elf"
+rustflags = [
+  "-C", "link-arg=-nostartfiles",
+]
 
-[target.thumbv7em-none-eabihf]
-rustflags = ["-C", "link-arg=-Tlink.x"]
+[target.xtensa-esp32s3-none-elf]
+runner = "espflash flash --monitor"
+
+[env]
+ESP_LOG = "INFO"
+
+[unstable]
+build-std = ["core"]
