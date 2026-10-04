@@ -28,8 +28,6 @@ const T1L: u16 = 36;
 const RESET_TICKS: u16 = 22_400; // ~280us
 
 fn encode_ws2812(rgb: RGB8, buf: &mut [PulseCode; 25]) {
-    // This board's WS2812 wants bits in R, G, B byte order, MSB first
-    // (confirmed empirically: sending GRB showed red as green).
     let bytes = [rgb.r, rgb.g, rgb.b];
     let mut idx = 0;
     for byte in bytes {
@@ -68,7 +66,7 @@ fn main() -> ! {
     
     println!("boot: rmt channel ok");
 
-    let mut hsv = Hsv {hue:0, sat: 255, val: 65 };
+    let mut hsv = Hsv { hue: 0, sat: 255, val: 30 };
 
     let mut buf = [PulseCode::default(); 25];
 
@@ -77,7 +75,7 @@ fn main() -> ! {
         encode_ws2812(color, &mut buf);
         let transaction = channel.transmit(&buf).expect("failed to start transmit");
         channel = transaction.wait().expect("failed to complete transmit");
-        delay.delay_millis(30);
-        hsv.hue = hsv.hue.wrapping_add(1);
+        delay.delay_millis(100);
+        hsv.hue = hsv.hue.wrapping_add(10);
     }
 }
