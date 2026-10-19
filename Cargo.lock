@@ -1239,8 +1239,25 @@ dependencies = [
  "esp-println",
  "heapless 0.9.3",
  "panic-halt",
+ "screnyx-core",
+ "screnyx-data-receivers",
  "serde",
  "serde-json-core",
+]
+
+[[package]]
+name = "screnyx-core"
+version = "0.1.0"
+dependencies = [
+ "heapless 0.9.3",
+ "serde",
+]
+
+[[package]]
+name = "screnyx-data-receivers"
+version = "0.1.0"
+dependencies = [
+ "esp-hal",
 ]
 
 [[package]]

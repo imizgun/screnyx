@@ -1,0 +1,7 @@
+[package]
+name = "screnyx-data-receivers"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+esp-hal.workspace = true

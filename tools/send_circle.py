@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Send a circle of Pixel{x,y} JSON lines over UART for the emb3d-scrn firmware.
 
-Wire format matches src/core/view_protocols/raw/pixel.rs: one JSON object
+Wire format matches crates/core/src/view_protocols/raw/pixel.rs: one JSON object
 per line, terminated by '\n', e.g. {"x":10,"y":20}\n
 """
 

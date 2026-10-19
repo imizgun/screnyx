@@ -21,6 +21,15 @@ espflash flash --port /dev/ttyACM0 --monitor target/xtensa-esp32s3-none-elf/rele
 
 If the board isn't detected: hold BOOT, press RESET, release BOOT, then flash again.
 
-sending UART messages: 
+The board shows up as two ports:
+- `/dev/ttyACM0` — ESP32-S3 USB-Serial-JTAG: flashing and logs (`println!`), used by `make all`
+- `/dev/ttyACM1` — CH343 USB-UART bridge on UART0 (GPIO43/44): data input
 
-```python3 src/send_circle.py /dev/ttyACM0 --cx 64 --cy 32 --radius 15```
+The numbers can swap after replugging; `/dev/serial/by-id/` has stable names
+(`usb-Espressif_USB_JTAG_serial_debug_unit_*` and `usb-1a86_USB_Single_Serial_*`).
+
+sending UART messages (in a second terminal while `make monitor` is running):
+
+```
+python3 tools/send_circle.py /dev/ttyACM1 --cx 64 --cy 32 --radius 15
+```

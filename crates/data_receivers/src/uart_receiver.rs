@@ -1,4 +1,4 @@
-use crate::data_receivers::data_receiver::DataReceiver;
+use crate::data_receiver::DataReceiver;
 use esp_hal::uart::{RxError, UartRx};
 use esp_hal::Blocking;
 

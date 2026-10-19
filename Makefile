@@ -1,13 +1,16 @@
-.PHONY: build flash all
+.PHONY: build flash monitor all
+
+# Logs (println!) come out of the USB-Serial-JTAG port.
+PORT ?= /dev/ttyACM0
+BIN = ./target/xtensa-esp32s3-none-elf/release/screnyx
 
 build:
 	cargo build --release
 
 flash:
-	espflash flash ./target/xtensa-esp32s3-none-elf/release/screnyx
+	espflash flash --port $(PORT) $(BIN)
 
 monitor:
-	cargo run --release
+	espflash monitor --port $(PORT)
 
-all:
-	make build flash monitor
+all: build flash monitor

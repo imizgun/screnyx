@@ -1,0 +1,18 @@
+[package]
+name = "screnyx"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+embedded-graphics.workspace = true
+panic-halt.workspace = true
+serde.workspace = true
+serde-json-core.workspace = true
+heapless.workspace = true
+embedded-hal-nb.workspace = true
+embedded-hal.workspace = true
+esp-hal.workspace = true
+esp-bootloader-esp-idf.workspace = true
+esp-println.workspace = true
+screnyx-core.workspace = true
+screnyx-data-receivers.workspace = true
