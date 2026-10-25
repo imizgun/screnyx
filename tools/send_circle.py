@@ -46,8 +46,8 @@ def main() -> None:
     parser.add_argument("--cx", type=int, default=64, help="circle center x")
     parser.add_argument("--cy", type=int, default=32, help="circle center y")
     parser.add_argument("--radius", type=int, default=20)
-    parser.add_argument("--width", type=int, default=128, help="display width")
-    parser.add_argument("--height", type=int, default=64, help="display height")
+    parser.add_argument("--width", type=int, default=320, help="display width")
+    parser.add_argument("--height", type=int, default=240, help="display height")
     parser.add_argument(
         "--delay",
         type=float,
