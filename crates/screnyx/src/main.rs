@@ -3,7 +3,9 @@
 
 use display_interface_spi::SPIInterface;
 use embedded_graphics::{
-    Drawable, geometry::Point, pixelcolor::{Rgb565, Rgb888, RgbColor},
+    Drawable,
+    geometry::Point,
+    pixelcolor::{Rgb565, Rgb888, RgbColor},
 };
 use embedded_hal_bus::spi::ExclusiveDevice;
 use esp_hal::{
@@ -33,7 +35,6 @@ fn panic(info: &::core::panic::PanicInfo) -> ! {
 fn main() -> ! {
     let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
     let periph = esp_hal::init(config);
-    let mut delay = Delay::new();
 
     let uart = Uart::new(periph.UART0, uart::Config::default())
         .expect("uart: failed to apply config")
@@ -98,8 +99,12 @@ fn main() -> ! {
                     match serde_json_core::from_slice::<Pixel>(line) {
                         Ok((p, _)) => {
                             println!("pix: {}, {}", p.x, p.y);
-                            embedded_graphics::Pixel(Point::new(p.x as i32, p.y as i32), Rgb565::WHITE)
-                                .draw(&mut screen).unwrap();
+                            embedded_graphics::Pixel(
+                                Point::new(p.x as i32, p.y as i32),
+                                Rgb565::WHITE,
+                            )
+                            .draw(&mut screen)
+                            .unwrap();
                             if pixels.push(p).is_err() {
                                 println!("pixels: buffer full, dropped");
                             }
