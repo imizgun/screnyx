@@ -1,13 +1,8 @@
 use embedded_graphics::{
-    Drawable,
-    draw_target::DrawTarget,
-    mono_font::MonoTextStyleBuilder,
-    pixelcolor::Rgb565,
-    primitives::{Circle, Primitive, Rectangle},
-    text::{Text, TextStyleBuilder},
+    Drawable, draw_target::DrawTarget, mono_font::{MonoTextStyle, MonoTextStyleBuilder, iso_8859_9::FONT_6X10}, pixelcolor::Rgb565, primitives::{Circle, Primitive, Rectangle}, text::Text,
 };
 
-use crate::view_protocols::abstracted::primitives::{shapes::ShapeKind, text::TextData};
+use crate::abstracted::primitives::{shapes::ShapeKind, text::TextData};
 
 pub trait Renderer {
     // fn bounds(&self) -> Rectangle;
@@ -21,22 +16,16 @@ impl Renderer for ShapeKind {
                 center,
                 radius,
                 style,
-            } => {
-                Circle::with_center(center, radius * 2)
-                    .into_styled(style.into())
-                    .draw(t)?;
-                Ok(())
-            }
+            } => Circle::with_center(center, radius * 2)
+                .into_styled(style.into())
+                .draw(t),
             ShapeKind::Rect {
                 corner_1,
                 corner_2,
                 style,
-            } => {
-                Rectangle::with_corners(corner_1, corner_2)
-                    .into_styled(style.into())
-                    .draw(t)?;
-                Ok(())
-            }
+            } => Rectangle::with_corners(corner_1, corner_2)
+                .into_styled(style.into())
+                .draw(t),
         }
     }
     // fn bounds(&self) -> Rectangle {
@@ -48,12 +37,10 @@ impl Renderer for ShapeKind {
 
 impl Renderer for TextData {
     fn render<D: DrawTarget<Color = Rgb565>>(&self, t: &mut D) -> Result<(), D::Error> {
-        let text_style = MonoTextStyleBuilder::new()
-            .background_color(Rgb565::from(self.style.background_color))
-            .text_color(Rgb565::from(self.style.color))
-            .build();
-
-        Text::new(&self.content.as_str(), self.origin, text_style).draw(t)?;
+        let style: MonoTextStyle<Rgb565> = self.style.into();
+        
+        Text::new(&self.content.as_str(), self.origin, style)
+            .draw(t)?;
 
         Ok(())
     }

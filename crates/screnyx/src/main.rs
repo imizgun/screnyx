@@ -19,9 +19,16 @@ use esp_hal::{
 };
 use esp_println::println;
 use ili9341::{DisplaySize240x320, Ili9341, Orientation};
-use screnyx_core::{line_reader::LineReader, view_protocols::raw::pixel::Pixel};
+use screnyx_core::line_reader::LineReader;
 use screnyx_data_receivers::{data_receiver::DataReceiver, uart_receiver::UartReceiver};
+use serde::Deserialize;
 use serde_json_core::heapless::Vec;
+
+#[derive(Deserialize, Debug)]
+struct Pixel {
+    x: usize,
+    y: usize,
+}
 
 esp_bootloader_esp_idf::esp_app_desc!();
 

@@ -230,8 +230,8 @@ Scene + Vars + Assets + t_ms
 ```
 
 ### Модель vs отрисовка
-- `core::model` — свои типы (`Scene`, `Layer`, `Rect`, `Color`, `Source`…), `serde`. Это контракт протокола: его читают прошивка, WASM и редактор (через `schemars` → JSON Schema → TS-типы)
-- `core::render` — переводит операции в примитивы `embedded-graphics` (`Circle`, `Rectangle`, `Line`, стили) и рисует в наш `Region`
+- `core::abstracted::primitives` — свои типы (`Scene`, `Layer`, `Rect`, `Color`, `Source`…), `serde`. Это контракт протокола: его читают прошивка, WASM и редактор (через `schemars` → JSON Schema → TS-типы)
+- `core::abstracted::convey` — переводит операции в примитивы `embedded-graphics` (`Circle`, `Rectangle`, `Line`, стили) и рисует в наш `Region`
 
 Типы `embedded-graphics` не используются как формат обмена: `"#ff0066"` и `[x,y,w,h]` удобнее пользователю, и контракт не должен зависеть от версии библиотеки.
 
