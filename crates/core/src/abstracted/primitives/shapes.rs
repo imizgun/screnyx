@@ -3,30 +3,37 @@ use embedded_graphics::{
     pixelcolor::Rgb565,
     primitives::{PrimitiveStyle, PrimitiveStyleBuilder},
 };
+use serde::Deserialize;
 
+#[derive(Clone, Copy, Deserialize)]
+pub struct Pos(pub i32, pub i32); // json: [x, y]
+
+impl From<Pos> for Point {
+    fn from(value: Pos) -> Self {
+        Point::new(value.0, value.1)
+    }
+}
+
+#[derive(Deserialize)]
 pub enum ShapeKind {
     Circle {
-        center: Point,
+        center: Pos,
         radius: u32,
         style: ShapeStyle,
     },
     Rect {
-        corner_1: Point,
-        corner_2: Point,
+        corner_1: Pos,
+        corner_2: Pos,
         style: ShapeStyle,
     },
 }
 
-#[derive(Clone, Copy)]
-pub struct Rgb {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
-}
+#[derive(Clone, Copy, Deserialize)]
+pub struct Rgb(pub u8, pub u8, pub u8); // json: [r, g, b]
 
 impl From<Rgb> for Rgb565 {
     fn from(value: Rgb) -> Self {
-        Rgb565::new(value.r >> 3, value.g >> 2, value.b >> 3)
+        Rgb565::new(value.0 >> 3, value.1 >> 2, value.2 >> 3)
     }
 }
 
@@ -40,7 +47,7 @@ impl Into<PrimitiveStyle<Rgb565>> for ShapeStyle {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Deserialize)]
 pub struct ShapeStyle {
     pub border_width: u16,
     pub border_color: Rgb, // simple rgb, not rgb565

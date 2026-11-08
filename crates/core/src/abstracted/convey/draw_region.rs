@@ -10,13 +10,21 @@ pub struct DrawRegion<'a> {
 }
 
 impl<'a> DrawRegion<'a> {
-    fn new(area: Rectangle, buf: &'a mut [Rgb565]) -> Option<Self> {
+    pub fn new(area: Rectangle, buf: &'a mut [Rgb565]) -> Option<Self> {
         let size = (area.size.height * area.size.width) as usize;
 
         Some(Self {
             area: area,
             pixels: buf.get_mut(..size)?,
         })
+    }
+
+    pub fn area(&self) -> Rectangle {
+        self.area
+    }
+
+    pub fn pixels(&self) -> &[Rgb565] {
+        self.pixels
     }
 }
 

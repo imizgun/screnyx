@@ -13,11 +13,15 @@ impl<const N: usize> LineReader<N> {
         }
     }
 
-    pub fn feed(&mut self, bytes: &[u8], mut on_line: impl FnMut(&[u8])) {
+    /// Returns the number of lines dropped because they did not fit into the buffer.
+    pub fn feed(&mut self, bytes: &[u8], mut on_line: impl FnMut(&[u8])) -> usize {
+        let mut dropped = 0;
         for &b in bytes {
             match b {
                 b'\n' => {
-                    if !self.is_overflowed && !self.buffer.is_empty() {
+                    if self.is_overflowed {
+                        dropped += 1;
+                    } else if !self.buffer.is_empty() {
                         on_line(&self.buffer)
                     }
                     self.buffer.clear();
@@ -32,5 +36,6 @@ impl<const N: usize> LineReader<N> {
                 }
             }
         }
+        dropped
     }
 }

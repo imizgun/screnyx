@@ -33,3 +33,11 @@ sending UART messages (in a second terminal while `make monitor` is running):
 ```
 python3 tools/send_circle.py /dev/ttyACM1 --cx 64 --cy 32 --radius 15
 ```
+
+sending a random scene (prints the objects, the JSON and whether it was sent;
+pass `--seed` to repeat a scene, `--layers` to set the layer count):
+
+```
+python3 tools/send_scene.py /dev/ttyACM1
+python3 tools/send_scene.py /dev/ttyACM1 --layers 4 --seed 7
+```

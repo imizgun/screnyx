@@ -3,9 +3,8 @@
 
 use display_interface_spi::SPIInterface;
 use embedded_graphics::{
-    Drawable,
-    geometry::Point,
-    pixelcolor::{Rgb565, Rgb888, RgbColor},
+    draw_target::DrawTarget,
+    pixelcolor::{Rgb565, RgbColor},
 };
 use embedded_hal_bus::spi::ExclusiveDevice;
 use esp_hal::{
@@ -19,18 +18,34 @@ use esp_hal::{
 };
 use esp_println::println;
 use ili9341::{DisplaySize240x320, Ili9341, Orientation};
-use screnyx_core::line_reader::LineReader;
+use screnyx_core::{
+    abstracted::{convey::renderer::render_scene, primitives::scene::Scene},
+    line_reader::LineReader,
+};
 use screnyx_data_receivers::{data_receiver::DataReceiver, uart_receiver::UartReceiver};
-use serde::Deserialize;
-use serde_json_core::heapless::Vec;
 
-#[derive(Deserialize, Debug)]
-struct Pixel {
-    x: usize,
-    y: usize,
-}
+const SCREEN_WIDTH: usize = 320;
+const STRIP_HEIGHT: usize = 40; // 320 * 40 * 2 = 25.6 KB
+
+// Rendered at boot to check the drawing path without UART
+const TEST_SCENE: &[u8] = br#"{"layers":[{"Shape":{"Rect":{"corner_1":[10,10],"corner_2":[120,80],"style":{"border_width":2,"border_color":[255,255,255],"inner_color":[0,0,180]}}}},{"Shape":{"Circle":{"center":[200,120],"radius":40,"style":{"border_width":0,"border_color":[0,0,0],"inner_color":[255,80,0]}}}},{"Text":{"origin":[20,200],"content":"hello","style":{"color":[255,255,255],"background_color":[0,0,0],"decoration":"Underlined"}}}]}"#;
 
 esp_bootloader_esp_idf::esp_app_desc!();
+
+fn show_scene<D>(json: &[u8], screen: &mut D, strip: &mut [Rgb565])
+where
+    D: DrawTarget<Color = Rgb565>,
+    D::Error: core::fmt::Debug,
+{
+    match serde_json_core::from_slice::<Scene>(json) {
+        Ok((scene, _)) => {
+            if let Err(e) = render_scene(&scene, screen, strip) {
+                println!("render error: {e:?}");
+            }
+        }
+        Err(e) => println!("error parse: {}", e),
+    }
+}
 
 #[panic_handler]
 fn panic(info: &::core::panic::PanicInfo) -> ! {
@@ -90,35 +105,21 @@ fn main() -> ! {
     println!("boot: init ok");
 
     let mut buf = [0u8; 256];
-    let mut reader = LineReader::<256>::new();
-    let mut pixels = Vec::<Pixel, 1024>::new();
+    let mut reader = LineReader::<1024>::new();
+    let mut strip = [Rgb565::BLACK; SCREEN_WIDTH * STRIP_HEIGHT];
+
+    show_scene(TEST_SCENE, &mut screen, &mut strip);
 
     loop {
         match receiver.read_bytes(&mut buf) {
             Ok(0) => {}
             Ok(n) => {
-                reader.feed(&buf[..n], |line| {
-                    if line == b"CLEAR" {
-                        pixels.clear();
-                        println!("clear");
-                        return;
-                    }
-                    match serde_json_core::from_slice::<Pixel>(line) {
-                        Ok((p, _)) => {
-                            println!("pix: {}, {}", p.x, p.y);
-                            embedded_graphics::Pixel(
-                                Point::new(p.x as i32, p.y as i32),
-                                Rgb565::WHITE,
-                            )
-                            .draw(&mut screen)
-                            .unwrap();
-                            if pixels.push(p).is_err() {
-                                println!("pixels: buffer full, dropped");
-                            }
-                        }
-                        Err(e) => println!("error parse: {}", e),
-                    }
+                let dropped = reader.feed(&buf[..n], |line| {
+                    show_scene(line, &mut screen, &mut strip);
                 });
+                if dropped > 0 {
+                    println!("line too long, dropped");
+                }
             }
             Err(e) => println!("UART rx error: {e:?}"),
         }

@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-heapless.workspace = true
+heapless = { workspace = true, features = ["serde"] }
 serde.workspace = true
 embedded-graphics.workspace = true
