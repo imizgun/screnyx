@@ -1,0 +1,14 @@
+// Project settings for Zed.
+// The workspace builds for xtensa (see .cargo/config.toml), where test targets
+// cannot compile (no `test` crate / std). Don't let rust-analyzer check them;
+// run host tests with `make test` instead.
+{
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "cargo": { "allTargets": false },
+        "check": { "allTargets": false }
+      }
+    }
+  }
+}

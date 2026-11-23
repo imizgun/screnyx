@@ -9,7 +9,7 @@ pub struct Frame<'a> {
 }
 
 impl<'a> Frame<'a> {
-    pub const MAGIC: [u8; 2] = [0x73, 0x78]; // sx
+    pub const MAGIC: [u8; 2] = [0x73, 0x78]; // sx magic value
     /// kind + seq + len
     pub const HEADER_LEN: usize = 4;
     pub const CRC_LEN: usize = 2;
@@ -30,7 +30,7 @@ impl<'a> Frame<'a> {
         let crc_at = Self::MAGIC.len() + Self::HEADER_LEN + self.payload.len();
 
         out[..Self::MAGIC.len()].copy_from_slice(&Self::MAGIC);
-        out[Self::MAGIC.len()..].copy_from_slice(&header);
+        out[Self::MAGIC.len()..Self::MAGIC.len() + Self::HEADER_LEN].copy_from_slice(&header);
         out[Self::MAGIC.len() + Self::HEADER_LEN..crc_at].copy_from_slice(self.payload);
 
         let mut crc = Crc16::new();

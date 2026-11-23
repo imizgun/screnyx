@@ -1,6 +1,6 @@
 use crate::protocol::{frame::Frame, frame_kind::FrameKind, nack_reason::NackReason};
 
-/// What the host asks the device to do. Payloads borrow the receive buffer.
+/// What the host asks the device to do. Payloads borrow the receive buffer
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Command<'a> {
     PutScene { json: &'a [u8] },

@@ -1,0 +1,7 @@
+[
+  {
+    "label": "core: host tests",
+    "command": "make test",
+    "use_new_terminal": false
+  }
+]

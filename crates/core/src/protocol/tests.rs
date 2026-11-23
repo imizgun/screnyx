@@ -23,7 +23,7 @@ fn encode(kind: u8, seq: u8, payload: &[u8]) -> Vec<u8> {
     Frame::new(FrameKind::PutScene, seq, payload)
         .encode(&mut out)
         .unwrap();
-    
+
     out[2] = kind;
     let mut crc = Crc16::new();
     crc.update(&out[2..out.len() - Frame::CRC_LEN]);
@@ -54,14 +54,18 @@ fn crc_matches_ccitt_false() {
 
 #[test]
 fn reads_frame_split_byte_by_byte_after_garbage() {
-    let mut bytes = std::vec![0x00, 0xA5, 0x13, 0xA5];
-    bytes.extend(encode(0x01, 7, b"{\"layers\":[]}"));
-    let chunks: Vec<&[u8]> = bytes.chunks(1).collect();
+    let mut garbage = std::vec![0x00, 0xA5, 0x13, 0xA5];
+    garbage.extend(encode(0x01, 7, b"{\"layers\":[]}"));
+    let chunks: Vec<&[u8]> = garbage.chunks(1).collect();
 
     let got = read_all(&mut FrameReader::<64>::new(), &chunks);
     assert_eq!(
         got,
-        [Got::Frame(FrameKind::PutScene, 7, b"{\"layers\":[]}".to_vec())]
+        [Got::Frame(
+            FrameKind::PutScene,
+            7,
+            b"{\"layers\":[]}".to_vec()
+        )]
     );
 }
 
@@ -141,6 +145,10 @@ fn response_roundtrips_through_reader() {
     let got = read_all(&mut FrameReader::<1>::new(), &[nack.encode(&mut out)]);
     assert_eq!(
         got,
-        [Got::Frame(FrameKind::Nack, 9, std::vec![NackReason::BadScene as u8])]
+        [Got::Frame(
+            FrameKind::Nack,
+            9,
+            std::vec![NackReason::BadScene as u8]
+        )]
     );
 }

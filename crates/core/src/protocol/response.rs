@@ -2,7 +2,7 @@ use crate::protocol::{
     frame::Frame, frame_kind::FrameKind, frame_reader::Rejected, nack_reason::NackReason,
 };
 
-/// The device's answer to a frame, matched to it by `seq`.
+/// The device's answer to a sent frame
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Response {
     Ack { seq: u8 },
@@ -22,8 +22,7 @@ impl Response {
                 Frame::new(FrameKind::Nack, seq, &reason_byte)
             }
         };
-        frame
-            .encode(out)
+        frame.encode(out)
             .expect("Response::MAX_LEN fits every response")
     }
 }
